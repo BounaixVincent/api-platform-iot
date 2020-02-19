@@ -8,9 +8,9 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 });
 
 
-let serialport = new SerialPort("/dev/ttyUSB1", {
+let serialport = new SerialPort("/dev/tty.SLAB_USBtoUART", {
   baudRate: 9600,
-}, function (err) {
+}, (err) => {
   if (err) {
     return console.log('Error: ', err.message)
   }
@@ -19,7 +19,7 @@ let serialport = new SerialPort("/dev/ttyUSB1", {
 serialport.pipe(xbeeAPI.parser);
 xbeeAPI.builder.pipe(serialport);
 
-serialport.on("open", function () {
+serialport.on("open", () => {
   var frame_obj = { // AT Request to be sent
     type: C.FRAME_TYPE.AT_COMMAND,
     command: "NI",
@@ -40,7 +40,7 @@ serialport.on("open", function () {
 
 // All frames parsed by the XBee will be emitted here
 
-xbeeAPI.parser.on("data", function (frame) {
+xbeeAPI.parser.on("data", (frame) => {
 
   //on new device is joined, register it
 
@@ -63,15 +63,21 @@ xbeeAPI.parser.on("data", function (frame) {
 
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
+    console.debug(frame);
+    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
+    // console.log(dataReceived);
 
+    // for (object in frame) {
+    //   console.log(frame[object]);
+    // }
 
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
     
   } else {
-    console.debug(frame);
-    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+    // console.debug(frame);
+    // let dataReceived = String.fromCharCode.apply(null, frame.commandData)
+    // console.log(dataReceived);
   }
 
 });
