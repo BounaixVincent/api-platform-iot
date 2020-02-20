@@ -111,9 +111,10 @@ io.on('connection', (client) => {
 const port = 8000;
 io.listen(port);
 console.log('listening on port ', port);
-const listGreetings = async () => {
+let equipements;
+const getEquipments = async () => {
   try {
-    const res = await axios.get('https://localhost:8443/greetings', {
+    const res = await axios.get('https://localhost:8443/equipments', {
       headers: {
         'Content-Type': 'application/ld+json'
       },
@@ -122,31 +123,61 @@ const listGreetings = async () => {
       }
     });
     console.log(res.data);
+    equipements = res.data;
+    return equipements;
   } catch (err) {
     console.error(err);
   }
 };
-listGreetings();
-//
-// serial_xbee.on("data", function(data) {
-//     console.log(data.type);
-//   // console.log('xbee data received:', data.type);
-//   // client.emit('timer', "pouet");
-// //
-// });
 
-// shepherd.on('ready', function () {
-//   console.log('Server is ready.');
-//
-//   // allow devices to join the network within 60 secs
-//   shepherd.permitJoin(60, function (err) {
-//     if (err)
-//       console.log(err);
-//   });
-// });
-//
-// shepherd.start(function (err) {                // start the server
-//   if (err)
-//     console.log(err);
-// });
+const postEquipment = async (data) => {
+  try {
+    const res = await axios.post('https://localhost:8443/equipments', {
+      headers: {
+        'Content-Type': 'application/ld+json'
+      },
+      params: {
+        macAddress: data.macAdress,
+        name: data.name,
+        type: data.name,
+      }
+    });
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const checkIfEquipmentExist = async (data) => {
+  let exist = false
+  await getEquipments();
+
+  // for loop to check if data.macAdress match with one of the macAdresses received then set exist variable to true or false
+  if (!exist) {
+    postEquipment();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+const postTemperature = async (data, equipment) => {
+
+  checkIfEquipmentExist(equipment);
+
+  if (!exist) {
+    return;
+  } else {
+    try {
+      const res = await axios.post('https://reqres.in/api/users', {
+        temperature: data.temperature,
+        TEquipmentsId: equipment.id,
+        date: Date.now()
+      });
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+};
 
