@@ -22,9 +22,10 @@ class Temperature
     private $temperature;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipments", inversedBy="equipments_sample")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipments", inversedBy="temperatures")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $equipments_id;
+    private $t_equipments_id;
 
     /**
      * @ORM\Column(type="datetime")
@@ -48,14 +49,14 @@ class Temperature
         return $this;
     }
 
-    public function getEquipmentsId(): ?Equipments
+    public function getTEquipmentsId(): ?Equipments
     {
-        return $this->equipments_id;
+        return $this->t_equipments_id;
     }
 
-    public function setEquipmentsId(?Equipments $equipments_id): self
+    public function setTEquipmentsId(?Equipments $t_equipments_id): self
     {
-        $this->equipments_id = $equipments_id;
+        $this->t_equipments_id = $t_equipments_id;
 
         return $this;
     }

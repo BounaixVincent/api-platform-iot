@@ -19,13 +19,13 @@ class Brightness
     /**
      * @ORM\Column(type="integer")
      */
-    private $Brightness;
+    private $brightness;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipments", inversedBy="brightness_sample")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipments", inversedBy="brightnesses")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $equipmentsÂ_id;
+    private $b_equiments_id;
 
     /**
      * @ORM\Column(type="datetime")
@@ -39,24 +39,24 @@ class Brightness
 
     public function getBrightness(): ?int
     {
-        return $this->Brightness;
+        return $this->brightness;
     }
 
-    public function setBrightness(int $Brightness): self
+    public function setBrightness(int $brightness): self
     {
-        $this->Brightness = $Brightness;
+        $this->brightness = $brightness;
 
         return $this;
     }
 
-    public function getEquipmentsÂId(): ?Equipments
+    public function getBEquimentsId(): ?Equipments
     {
-        return $this->equipmentsÂ_id;
+        return $this->b_equiments_id;
     }
 
-    public function setEquipmentsÂId(?Equipments $equipmentsÂ_id): self
+    public function setBEquimentsId(?Equipments $b_equiments_id): self
     {
-        $this->equipmentsÂ_id = $equipmentsÂ_id;
+        $this->b_equiments_id = $b_equiments_id;
 
         return $this;
     }

@@ -34,19 +34,19 @@ class Equipments
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Brightness", mappedBy="equipmentsÂ_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Brightness", mappedBy="b_equiments_id")
      */
-    private $brightness_sample;
+    private $brightnesses;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Temperature", mappedBy="equipments_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Temperature", mappedBy="t_equipments_id")
      */
-    private $equipments_sample;
+    private $temperatures;
 
     public function __construct()
     {
-        $this->brightness_sample = new ArrayCollection();
-        $this->equipments_sample = new ArrayCollection();
+        $this->brightnesses = new ArrayCollection();
+        $this->temperatures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,28 +93,28 @@ class Equipments
     /**
      * @return Collection|Brightness[]
      */
-    public function getBrightnessSample(): Collection
+    public function getBrightnesses(): Collection
     {
-        return $this->brightness_sample;
+        return $this->brightnesses;
     }
 
-    public function addBrightnessSample(Brightness $brightnessSample): self
+    public function addBrightness(Brightness $brightness): self
     {
-        if (!$this->brightness_sample->contains($brightnessSample)) {
-            $this->brightness_sample[] = $brightnessSample;
-            $brightnessSample->setEquipmentsÂId($this);
+        if (!$this->brightnesses->contains($brightness)) {
+            $this->brightnesses[] = $brightness;
+            $brightness->setBEquimentsId($this);
         }
 
         return $this;
     }
 
-    public function removeBrightnessSample(Brightness $brightnessSample): self
+    public function removeBrightness(Brightness $brightness): self
     {
-        if ($this->brightness_sample->contains($brightnessSample)) {
-            $this->brightness_sample->removeElement($brightnessSample);
+        if ($this->brightnesses->contains($brightness)) {
+            $this->brightnesses->removeElement($brightness);
             // set the owning side to null (unless already changed)
-            if ($brightnessSample->getEquipmentsÂId() === $this) {
-                $brightnessSample->setEquipmentsÂId(null);
+            if ($brightness->getBEquimentsId() === $this) {
+                $brightness->setBEquimentsId(null);
             }
         }
 
@@ -124,28 +124,28 @@ class Equipments
     /**
      * @return Collection|Temperature[]
      */
-    public function getEquipmentsSample(): Collection
+    public function getTemperatures(): Collection
     {
-        return $this->equipments_sample;
+        return $this->temperatures;
     }
 
-    public function addEquipmentsSample(Temperature $equipmentsSample): self
+    public function addTemperature(Temperature $temperature): self
     {
-        if (!$this->equipments_sample->contains($equipmentsSample)) {
-            $this->equipments_sample[] = $equipmentsSample;
-            $equipmentsSample->setEquipmentsId($this);
+        if (!$this->temperatures->contains($temperature)) {
+            $this->temperatures[] = $temperature;
+            $temperature->setTEquipmentsId($this);
         }
 
         return $this;
     }
 
-    public function removeEquipmentsSample(Temperature $equipmentsSample): self
+    public function removeTemperature(Temperature $temperature): self
     {
-        if ($this->equipments_sample->contains($equipmentsSample)) {
-            $this->equipments_sample->removeElement($equipmentsSample);
+        if ($this->temperatures->contains($temperature)) {
+            $this->temperatures->removeElement($temperature);
             // set the owning side to null (unless already changed)
-            if ($equipmentsSample->getEquipmentsId() === $this) {
-                $equipmentsSample->setEquipmentsId(null);
+            if ($temperature->getTEquipmentsId() === $this) {
+                $temperature->setTEquipmentsId(null);
             }
         }
 
