@@ -17,3 +17,7 @@ Docker
 ## How to use the project 
 
 Enter the following command at the Project Root : docker-compose up
+
+## Commits
+
+Follow the conventional commits : conventionalcommits.org/en/v1.0.0/
