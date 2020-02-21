@@ -66,17 +66,11 @@ xbeeAPI.parser.on("data", (frame) => {
 
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
-    console.debug(frame);
-    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
+    // console.debug(frame);
+    let dataReceived = String.fromCharCode(frame.commandData);
 
-    // listGreetings();
-
-
-    // console.log(dataReceived);
-    // for (object in frame) {
-    //   console.log(frame[object]);
-    // }
-
+    // console.log(dataReceived)
+    checkIfEquipmentExist(frame);
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
 
@@ -112,7 +106,25 @@ const port = 8000;
 io.listen(port);
 console.log('listening on port ', port);
 let equipements;
-const getEquipments = async () => {
+
+const checkIfEquipmentExist = async (data) => {
+
+  let equip;
+  let exist = false;
+  let value;
+
+  for (i in data) {
+    // console.log(data)
+    if (i === 'remote64') {
+      equip = await data[i];
+      // console.log(data[i])
+    } else if (i === 'analogSamples') {
+      for (v in data[i]) {
+        value = data[i][v].toString();
+      }
+    }
+  }
+
   try {
     const res = await axios.get('https://localhost:8443/equipments', {
       headers: {
@@ -122,42 +134,36 @@ const getEquipments = async () => {
         page: 1
       }
     });
-    console.log(res.data);
-    equipements = res.data;
-    return equipements;
-  } catch (err) {
-    console.error(err);
-  }
-};
+    
 
-const postEquipment = async (data) => {
-  try {
-    const res = await axios.post('https://localhost:8443/equipments', {
-      headers: {
-        'Content-Type': 'application/ld+json'
-      },
-      params: {
-        macAddress: data.macAdress,
-        name: data.name,
-        type: data.name,
+    for (i in res.data) {
+      if (Array.isArray(res.data[i])) {
+        exist = res.data[i].some((el) => { return el.macAddress === equip})
+        console.log(exist)
+        // if (!exist) {
+        //   console.log(equip)
+        //   try {
+        //     const resp = await axios.post('https://localhost:8443/equipments', {
+        //       headers: {
+        //         'Content-Type': 'application/ld+json'
+        //       },
+        //       params: {
+        //         macAddress: equip,
+        //         name: '',
+        //         type: 'new',
+        //         brightness:[value],
+        //         temperature:[]
+        //       }
+        //     });
+        //     return resp.data;
+        //   } catch (err) {
+        //     console.error(err);
+        //   }
+        // }
       }
-    });
-    return res.data;
+    }
   } catch (err) {
     console.error(err);
-  }
-}
-
-const checkIfEquipmentExist = async (data) => {
-  let exist = false
-  await getEquipments();
-
-  // for loop to check if data.macAdress match with one of the macAdresses received then set exist variable to true or false
-  if (!exist) {
-    postEquipment();
-    return true;
-  } else {
-    return false;
   }
 }
 
@@ -169,7 +175,7 @@ const postTemperature = async (data, equipment) => {
     return;
   } else {
     try {
-      const res = await axios.post('https://reqres.in/api/users', {
+      const res = await axios.post('https://localhost:8443/temperatures', {
         temperature: data.temperature,
         TEquipmentsId: equipment.id,
         date: Date.now()
