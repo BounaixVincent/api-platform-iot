@@ -61,8 +61,6 @@ xbeeAPI.parser.on("data", (frame) => {
   }
 
   if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
-    // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
-    // console.log(">> ZIGBEE_RECEIVE_PACKET >", frame);
 
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
@@ -126,7 +124,7 @@ const checkIfEquipmentExist = async (data) => {
   }
 
   try {
-    const res = await axios.get('https://localhost:8443/equipments', {
+    const res = await axios.get('https://localhost:8443/public_equipments', {
       headers: {
         'Content-Type': 'application/ld+json'
       },
@@ -140,26 +138,38 @@ const checkIfEquipmentExist = async (data) => {
       if (Array.isArray(res.data[i])) {
         exist = res.data[i].some((el) => { return el.macAddress === equip})
         console.log(exist)
-        // if (!exist) {
-        //   console.log(equip)
-        //   try {
-        //     const resp = await axios.post('https://localhost:8443/equipments', {
-        //       headers: {
-        //         'Content-Type': 'application/ld+json'
-        //       },
-        //       params: {
-        //         macAddress: equip,
-        //         name: '',
-        //         type: 'new',
-        //         brightness:[value],
-        //         temperature:[]
-        //       }
-        //     });
-        //     return resp.data;
-        //   } catch (err) {
-        //     console.error(err);
-        //   }
-        // }
+        if (!exist) {
+          console.log(equip)
+
+          axios.post('https://localhost:8443/public_equipments', {
+            mac_address: equip,
+                name: '',
+                type: 'new',
+                macAdress: equip
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+          // try {
+          //   const resp = await axios.post('https://localhost:8443/public_equipments', {
+          //     headers: {
+          //       'Content-Type': 'application/ld+json'
+          //     },
+          //     params: {
+          //       mac_address: equip,
+          //       name: '',
+          //       type: 'new',
+          //       macAdress: equip
+          //     }
+          //   });
+          //   return resp.data;
+          // } catch (err) {
+          //   console.error(err);
+          // }
+        }
       }
     }
   } catch (err) {
